@@ -9,13 +9,25 @@ phantomjs_dependencies:
       - libfreetype6-dev
       - libfontconfig1
       - libfontconfig1-dev
-      
+
+create_downloads_dir:
+  cmd.run:
+    - name: mkdir -p /tmp/downloads
+    - user: {{ grains['user'] }}
+
+download_phantomjs:
+  cmd.run:
+    - name: wget https://tl-phantomjs.s3-us-west-2.amazonaws.com/phantomjs-1.9.8-linux-x86_64.zip
+    - cwd: /tmp/downloads
+    - user: {{ grains['user'] }}
+
 phantomjs_bin:
   archive.extracted:
     - name: /home/{{ grains['user'] }}/phantomjs
-    - source: salt://phantomjs/phantomjs-1.9.8-linux-x86_64.zip
+    - source: /tmp/downloads/phantomjs-1.9.8-linux-x86_64.zip
+    - enforce_toplevel: False
     - archive_format: zip
-    - source_hash: md5=17f42caf99fdc4561a3e1dc912f43004
+    - source_hash: md5=8fc6efa7c7bda01f1cea1ee5098ada1a
     - user: {{ grains['user'] }}
     - group: {{ grains['user'] }}
 
